@@ -82,40 +82,78 @@ module user_project_wrapper #(
 /* User project is instantiated  here   */
 /*--------------------------------------*/
 
-user_proj_example mprj (
-`ifdef USE_POWER_PINS
-	.vccd1(vccd1),	// User area 1 1.8V power
-	.vssd1(vssd1),	// User area 1 digital ground
-`endif
+pulpino_top mprj (
 
-    .wb_clk_i(wb_clk_i),
-    .wb_rst_i(wb_rst_i),
+  .clk(wb_clk_i),
+  .rst_n(wb_rst_i),
 
-    // MGMT SoC Wishbone Slave
+  .clk_sel_i(io_in[0]),
+  .clk_standalone_i(io_in[1]),
+  .testmode_i(io_in[2]),
+  .fetch_enable_i(io_in[3]),
+  .scan_enable_i(io_in[4]),
 
-    .wbs_cyc_i(wbs_cyc_i),
-    .wbs_stb_i(wbs_stb_i),
-    .wbs_we_i(wbs_we_i),
-    .wbs_sel_i(wbs_sel_i),
-    .wbs_adr_i(wbs_adr_i),
-    .wbs_dat_i(wbs_dat_i),
-    .wbs_ack_o(wbs_ack_o),
-    .wbs_dat_o(wbs_dat_o),
+  //SPI Slave
+  .spi_clk_i(io_in[5]),
+  .spi_cs_i(io_in[6]),
+  .spi_mode_o(io_out[1:0]),
+  .spi_sdo0_o(io_out[2]),
+  .spi_sdo1_o(io_out[3]),
+  .spi_sdo2_o(io_out[4]),
+  .spi_sdo3_o(io_out[5]),
+  .spi_sdi0_i(io_in[7]),
+  .spi_sdi1_i(io_in[8]),
+  .spi_sdi2_i(io_in[9]),
+  .spi_sdi3_i(io_in[10]),
 
-    // Logic Analyzer
+  //SPI Master
+  .spi_master_clk_o(io_out[6]),
+  .spi_master_csn0_o(io_out[7]),
+  .spi_master_csn1_o(io_out[8]),
+  .spi_master_csn2_o(io_out[9]),
+  .spi_master_csn3_o(io_out[10]),
+  .spi_master_mode_o(io_out[12:11]),
+  .spi_master_sdo0_o(io_out[13]),
+  .spi_master_sdo1_o(io_out[14]),
+  .spi_master_sdo2_o(io_out[15]),
+  .spi_master_sdo3_o(io_out[16]),
+  .spi_master_sdi0_i(io_in[11]),
+  .spi_master_sdi1_i(io_in[12]),
+  .spi_master_sdi2_i(io_in[13]),
+  .spi_master_sdi3_i(io_in[14]),
 
-    .la_data_in(la_data_in),
-    .la_data_out(la_data_out),
-    .la_oenb (la_oenb),
+  .scl_pad_i(io_in[15]),
+  .scl_pad_o(io_out[17]),
+  .scl_padoen_o(io_out[18]),
+  .sda_pad_i(io_in[16]),
+  .sda_pad_o(io_out[19]),
+  .sda_padoen_o(io_out[20]),
 
-    // IO Pads
+  .uart_tx(io_out[21]),
+  .uart_rx(io_in[17]),
+  .uart_rts(io_out[22]),
+  .uart_dtr(io_out[23]),
+  .uart_cts(io_in[18]),
+  .uart_dsr(io_in[19]),
 
-    .io_in (io_in),
-    .io_out(io_out),
-    .io_oeb(io_oeb),
+  .gpio_in(io_in[27:20]),
+  .gpio_out(io_out[31:24]),
+//   .gpio_dir,
+//   .gpio_padcfg,
 
-    // IRQ
-    .irq(user_irq)
+  // JTAG signals
+  .tck_i(user_clock2),
+  .trstn_i(io_in[28]),
+  .tms_i(io_in[29]),
+  .tdi_i(io_in[30]),
+  .tdo_o(io_out[32]),
+
+  // PULPino specific pad config
+// .pad_cfg_o,
+// .pad_mux_o,
+
+  // drive low to enable output
+  .io_oeb(io_oeb[32:0])
 );
 
 endmodule	// user_project_wrapper
